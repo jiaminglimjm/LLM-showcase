@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2D Particles Elastic Collisions Simulator</title>
+    <style>
+        canvas {
+            display: block;
+            margin: 0 auto;
+            background-color: black;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="simulation" width="720" height="720"></canvas>
+    <script>
+        class Particle {
+            constructor(x, y, dx, dy) {
+                this.x = x;
+                this.y = y;
+                this.dx = dx;
+                this.dy = dy;
+                this.radius = 10;
+                this.color = 'white';
+            }
+
+            move() {
+                this.x += this.dx;
+                this.y += this.dy;
+            }
+
+            draw(ctx) {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+                ctx.closePath();
+            }
+
+            wallCollision(width, height) {
+                if (this.x - this.radius < 0 || this.x + this.radius > width) {
+                    this.dx = -this.dx;
+                }
+                if (this.y - this.radius < 0 || this.y + this.radius > height) {
+                    this.dy = -this.dy;
+                }
+            }
+        }
+
+        function distance(p1, p2) {
+            return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
+        }
+
+        function resolveCollision(p1, p2) {
+            const dist = distance(p1, p2);
+
+            if (dist <= p1.radius + p2.radius) {
+                const nx = (p2.x - p1.x) / dist;
+                const ny = (p2.y - p1.y) / dist;
+
+                const tx = -ny;
+                const ty = nx;
+
+                const dp1n = p1.dx * nx + p1.dy * ny;
+                const dp2n = p2.dx * nx + p2.dy * ny;
+
+                const dp1t = p1.dx * tx + p1.dy * ty;
+                const dp2t = p2.dx * tx + p2.dy * ty;
+
+                const p1NewNormalSpeed = dp2n;
+                const p2NewNormalSpeed = dp1n;
+
+                p1.dx = p1NewNormalSpeed * nx + dp1t * tx;
+                p1.dy = p1NewNormalSpeed * ny + dp1t * ty;
+                p2.dx = p2NewNormalSpeed * nx + dp2t * tx;
+                p2.dy = p2NewNormalSpeed * ny + dp2t * ty;
+
+                /*const overlap = (p1.radius + p2.radius) - dist;
+                const separationX = overlap * nx / 2;
+                const separationY = overlap * ny / 2;
+
+                p1.x += separationX;
+                p1.y += separationY;
+                p2.x -= separationX;
+                p2.y -= separationY;*/
+            }
+        }
+
+        function drawLine(ctx, p1, p2) {
+            ctx.beginPath();
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.strokeStyle = p1.color;
+            ctx.stroke();
+        }
+
+        function drawPolygons(particles, ctx, depth, ratio) {
+            if (depth === 0 || particles.length < 3) {
+                return;
+            }
+
+            const newParticles = [];
+            for (let i = 0; i < particles.length; i++) {
+                const p1 = particles[i];
+                const p2 = particles[(i + 1) % particles.length];
+                const x = p1.x + ratio * (p2.x - p1.x);
+                const y = p1.y + ratio * (p2.y - p1.y);
+                const newParticle = new Particle(x, y, 0, 0);
+                drawLine(ctx, p1, newParticle);
+                newParticles.push(newParticle);
+            }
+
+            drawPolygons(newParticles, ctx, depth - 1, ratio);
+        }
+
+
+        const canvas = document.getElementById('simulation');
+        const ctx = canvas.getContext('2d');
+        const width = canvas.width;
+        const height = canvas.height;
+
+        const numParticles = 12;
+        const particles = [];
+        const centerX = width / 2;
+        const centerY = height / 2;
+        const initialSpeed = 2;
+        const circleRadius = 150;
+
+        for (let i = 0; i < numParticles; i++) {
+            const angle = 2 * Math.PI * i / numParticles;
+            const x = centerX + circleRadius * Math.cos(angle);
+            const y = centerY + circleRadius * Math.sin(angle);
+            const dx = initialSpeed * Math.cos(angle);
+            const dy = initialSpeed * Math.sin(angle);
+            particles.push(new Particle(x, y, dx, dy));
+        }
+
+        let ratio = 0;
+        const ratioSpeed = 0.005;
+        const maxDepth = 31;
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+
+            for (const p of particles) {
+                p.move();
+                p.wallCollision(width, height);
+                p.draw(ctx);
+            }
+
+            for (let i = 0; i < numParticles; i++) {
+                for (let j = i + 1; j < numParticles; j++) {
+                    resolveCollision(particles[i], particles[j]);
+                }
+            }
+
+            drawPolygons(particles, ctx, maxDepth, ratio);
+
+            ratio += ratioSpeed;
+            if (ratio > 1) {
+                ratio = 0;
+            }
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+    </script>
+</body>
+</html>
