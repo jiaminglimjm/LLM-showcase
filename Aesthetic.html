@@ -74,11 +74,12 @@
         <input type="range" id="max_depth" name="max_depth" min="1" max="8" step="1" value="7">
         <input type="number" id="max_depth_value" value="7" min="1" max="8" step="1">
     </div>
-    <div>
+    <div class="controls">
         <label for="particle_speed">Particle Speed:</label>
         <input type="range" id="particle_speed" name="particle_speed" min="0" max="5" step="0.1" value="3.5">
+        <input type="number" id="particle_speed_value" value="3.5" min="0" max="5" step="0.1">
     </div>
-    <div>
+    <div class="controls">
         <label for="num_particles">Number of Particles:</label>
         <input type="range" id="num_particles" name="num_particles" min="3" max="50" value="16">
         <input type="number" id="num_particles_value" value="16" min="3" max="50">
@@ -242,6 +243,7 @@
         const maxDepthInput = document.getElementById('max_depth');
         const maxDepthValue = document.getElementById('max_depth_value');
         const particleSpeedInput = document.getElementById('particle_speed');
+        const particleSpeedValue = document.getElementById('particle_speed_value');
         const numParticlesInput = document.getElementById('num_particles');
         const numParticlesValue = document.getElementById('num_particles_value');
         const refreshButton = document.getElementById('refresh');
@@ -257,7 +259,13 @@
         });
 
         particleSpeedInput.addEventListener('input', () => {
+            particleSpeedValue.value = particleSpeedInput.value;
             initialSpeed = parseFloat(particleSpeedInput.value);
+        });
+        
+        particleSpeedInput.addEventListener('input', () => {
+            particleSpeedInput.value = particleSpeedValue.value;
+            initialSpeed = parseFloat(particleSpeedValue.value);
         });
 
         numParticlesInput.addEventListener('input', () => {
