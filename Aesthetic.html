@@ -76,12 +76,12 @@
     </div>
     <div>
         <label for="particle_speed">Particle Speed:</label>
-        <input type="range" id="particle_speed" name="particle_speed" min="0" max="5" step="0.1" value="2">
+        <input type="range" id="particle_speed" name="particle_speed" min="0" max="5" step="0.1" value="3.5">
     </div>
     <div>
         <label for="num_particles">Number of Particles:</label>
-        <input type="range" id="num_particles" name="num_particles" min="3" max="50" value="12">
-        <input type="number" id="num_particles_value" value="12" min="3" max="50">
+        <input type="range" id="num_particles" name="num_particles" min="3" max="50" value="16">
+        <input type="number" id="num_particles_value" value="16" min="3" max="50">
     </div>
     <button id="refresh">Refresh</button>
 
@@ -196,7 +196,7 @@
         let particles = [];
         const centerX = width / 2;
         const centerY = height / 2;
-        let initialSpeed = 3;
+        let initialSpeed = 3.5;
         const circleRadius = 150;
 
         for (let i = 0; i < numParticles; i++) {
