@@ -5,18 +5,71 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2D Particles Elastic Collisions Simulator</title>
     <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+
         canvas {
             display: block;
             margin: 0 auto;
             background-color: black;
+            max-width: 100%;
         }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .controls > div {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition-duration: 0.4s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        @media (max-width: 768px) {
+            .controls {
+                flex-direction: column;
+            }
+        }
+
     </style>
 </head>
 <body>
 
     <canvas id="simulation" width="720" height="720"></canvas>
 
-    <div>
+    <div class="controls">
         <label for="max_depth">Max Depth:</label>
         <input type="range" id="max_depth" name="max_depth" min="1" max="8" step="1" value="7">
         <input type="number" id="max_depth_value" value="7" min="1" max="8" step="1">
@@ -195,7 +248,7 @@
 
         maxDepthInput.addEventListener('input', () => {
             maxDepthValue.value = maxDepthInput.value;
-            maxDepth = parseFloat(maxDepthInput.value);
+            maxDepth = Math.pow(2,parseFloat(maxDepthValue.value));
         });
 
         maxDepthValue.addEventListener('input', () => {
