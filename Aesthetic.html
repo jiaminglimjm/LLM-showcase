@@ -13,7 +13,26 @@
     </style>
 </head>
 <body>
+
     <canvas id="simulation" width="720" height="720"></canvas>
+
+    <div>
+        <label for="max_depth">Max Depth:</label>
+        <input type="range" id="max_depth" name="max_depth" min="1" max="8" step="1" value="7">
+        <input type="number" id="max_depth_value" value="7" min="1" max="8" step="1">
+    </div>
+    <div>
+        <label for="particle_speed">Particle Speed:</label>
+        <input type="range" id="particle_speed" name="particle_speed" min="0" max="5" step="0.1" value="2">
+    </div>
+    <div>
+        <label for="num_particles">Number of Particles:</label>
+        <input type="range" id="num_particles" name="num_particles" min="3" max="50" value="12">
+        <input type="number" id="num_particles_value" value="12" min="3" max="50">
+    </div>
+    <button id="refresh">Refresh</button>
+
+
     <script>
         class Particle {
             constructor(x, y, dx, dy) {
@@ -120,11 +139,11 @@
         const width = canvas.width;
         const height = canvas.height;
 
-        const numParticles = 12;
-        const particles = [];
+        let numParticles = 12;
+        let particles = [];
         const centerX = width / 2;
         const centerY = height / 2;
-        const initialSpeed = 2;
+        let initialSpeed = 2;
         const circleRadius = 150;
 
         for (let i = 0; i < numParticles; i++) {
@@ -137,8 +156,8 @@
         }
 
         let ratio = 0;
-        const ratioSpeed = 0.005;
-        const maxDepth = 31;
+        const ratioSpeed = 0.003;
+        let maxDepth = 31;
 
         function animate() {
             ctx.clearRect(0, 0, width, height);
@@ -149,8 +168,8 @@
                 p.draw(ctx);
             }
 
-            for (let i = 0; i < numParticles; i++) {
-                for (let j = i + 1; j < numParticles; j++) {
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
                     resolveCollision(particles[i], particles[j]);
                 }
             }
@@ -165,6 +184,52 @@
         }
 
         animate();
+
+
+        const maxDepthInput = document.getElementById('max_depth');
+        const maxDepthValue = document.getElementById('max_depth_value');
+        const particleSpeedInput = document.getElementById('particle_speed');
+        const numParticlesInput = document.getElementById('num_particles');
+        const numParticlesValue = document.getElementById('num_particles_value');
+        const refreshButton = document.getElementById('refresh');
+
+        maxDepthInput.addEventListener('input', () => {
+            maxDepthValue.value = maxDepthInput.value;
+            maxDepth = parseFloat(maxDepthInput.value);
+        });
+
+        maxDepthValue.addEventListener('input', () => {
+            maxDepthInput.value = maxDepthValue.value;
+            maxDepth = Math.pow(2,parseFloat(maxDepthValue.value));
+        });
+
+        particleSpeedInput.addEventListener('input', () => {
+            initialSpeed = parseFloat(particleSpeedInput.value);
+        });
+
+        numParticlesInput.addEventListener('input', () => {
+            numParticlesValue.value = numParticlesInput.value;
+            numParticles = parseInt(numParticlesInput.value);
+        });
+
+        numParticlesValue.addEventListener('input', () => {
+            numParticlesInput.value = numParticlesValue.value;
+            numParticles = parseInt(numParticlesValue.value);
+        });
+
+        refreshButton.addEventListener('click', () => {
+            particles.length = 0;
+            ratio = 0;
+            for (let i = 0; i < numParticles; i++) {
+                const angle = 2 * Math.PI * i / numParticles;
+                const x = centerX + circleRadius * Math.cos(angle);
+                const y = centerY + circleRadius * Math.sin(angle);
+                const dx = initialSpeed * Math.cos(angle);
+                const dy = initialSpeed * Math.sin(angle);
+                particles.push(new Particle(x, y, dx, dy));
+            }
+        });
+
     </script>
 </body>
 </html>
