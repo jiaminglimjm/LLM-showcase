@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, orientation=landscape">
+    <title>Random Word Picker</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+            font-size: 5vw;
+            text-align: center;
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body onclick="showRandomWord()">
+    <div id="word"></div>
+
+    <script>
+        let words = ["adalah", "akan", "bahawa", "bantu", "pernah", "perlu", "mereka", "ayah", "supaya", "apabila", "sebab", "oleh", "untuk", "baca", "tulis", "lukis", "sangat", "siap", "telah"];
+        
+        function showRandomWord() {
+            if (words.length === 0) return;
+            
+            let randomIndex = Math.floor(Math.random() * words.length);
+            let selectedWord = words.splice(randomIndex, 1)[0]; // Remove selected word from list
+            
+            document.getElementById("word").textContent = selectedWord;
+        }
+
+        showRandomWord(); // Show first word on load
+    </script>
+</body>
+</html>
