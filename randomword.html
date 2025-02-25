@@ -23,10 +23,23 @@
     <div id="word"></div>
 
     <script>
-        let words = ["adalah", "akan", "bahawa", "bantu", "pernah", "perlu", "mereka", "ayah", "supaya", "apabila", "sebab", "oleh", "untuk", "baca", "tulis", "lukis", "sangat", "siap", "telah"];
-        let words = ["mereka", "pada", "atau", "lama", "biar", "kepada", "telah", "perlu", "bahawa", "masa", "cara", "berlaku", "sukarelawan", "bakar", "tulis", "lukis", "ingin"];
+        // Store all word sets in an object
+        let wordSets = {
+            1: ["adalah", "akan", "bahawa", "bantu", "pernah", "perlu", "mereka", "ayah", "supaya", "apabila", "sebab", "oleh", "untuk", "baca", "tulis", "lukis", "sangat", "siap", "telah"],
+            2: ["mereka", "pada", "atau", "lama", "biar", "kepada", "telah", "perlu", "bahawa", "masa", "cara", "berlaku", "sukarelawan", "bakar", "tulis", "lukis", "ingin"]
+        };
 
-        
+        // Get the set parameter from the URL
+        let urlParams = new URLSearchParams(window.location.search);
+        let setParam = urlParams.get("set");
+
+        // Convert setParam to a number and fallback to set 1 if invalid or missing
+        let setNumber = parseInt(setParam) || 1;
+
+        // Use the selected set or default to an empty array if the set number doesn't exist
+        let words = wordSets[setNumber] || [];
+
+        // Function to show a random word
         function showRandomWord() {
             if (words.length === 0) return;
             
