@@ -3,30 +3,62 @@
 // Replace with your own data or fetch from backend
 const words = [
   { word: 'anjing', image: 'images/anjing-dog.jpg', translation: 'dog' },
+  { word: 'bandar', image: 'images/bandar-city.jpg', translation: 'city' },
+  { word: 'banjir', image: 'images/banjir-flood.jpg', translation: 'flood' },
+  { word: 'bengkel', image: 'images/bengkel-workshop.jpg', translation: 'workshop' },
+  { word: 'berenang', image: 'images/berenang-swimming.jpg', translation: 'swimming' },
+  { word: 'berhenti', image: 'images/berhenti-stop.jpg', translation: 'stop' },
   { word: 'berkelah', image: 'images/berkelah-picnic.jpg', translation: 'picnic' },
   { word: 'berkhemah', image: 'images/berkhemah-camping.jpg', translation: 'camping' },
+  { word: 'biawak', image: 'images/biawak-monitor lizard.jpg', translation: 'monitor lizard' },
   { word: 'bimbang', image: 'images/bimbang-worried.jpg', translation: 'worried' },
+  { word: 'bosan', image: 'images/bosan-bored.jpg', translation: 'bored' },
+  { word: 'buaya', image: 'images/buaya-crocodile.jpg', translation: 'crocodile' },
+  { word: 'bunga mawar', image: 'images/bunga mawar-rose.jpg', translation: 'rose' },
   { word: 'epal', image: 'images/epal-apple.jpg', translation: 'apple' },
   { word: 'gajah', image: 'images/gajah-elephant.jpg', translation: 'elephant' },
   { word: 'gembira', image: 'images/gembira-happy.jpg', translation: 'happy' },
+  { word: 'gerai', image: 'images/gerai-shop.jpg', translation: 'shop' },
+  { word: 'hadiah', image: 'images/hadiah-present.jpg', translation: 'present' },
+  { word: 'haiwan', image: 'images/haiwan-animals.jpg', translation: 'animals' },
+  { word: 'jawapan', image: 'images/jawapan-answers.jpg', translation: 'answers' },
   { word: 'jurujual', image: 'images/jurujual-promoter.jpg', translation: 'promoter' },
+  { word: 'jurujual', image: 'images/jurujual-salesperson.jpg', translation: 'salesperson' },
   { word: 'jurulatih', image: 'images/jurulatih-trainer.jpg', translation: 'trainer' },
   { word: 'jururawat', image: 'images/jururawat-nurse.jpg', translation: 'nurse' },
+  { word: 'kambing', image: 'images/kambing-goat.jpg', translation: 'goat' },
   { word: 'kapal', image: 'images/kapal-ship.jpg', translation: 'ship' },
   { word: 'kapal terbang', image: 'images/kapal_terbang-aeroplane.jpeg', translation: 'aeroplane' },
+  { word: 'katak', image: 'images/katak-frog.jpg', translation: 'frog' },
   { word: 'kereta api', image: 'images/kereta_api-train.jpg', translation: 'train' },
   { word: 'kucing', image: 'images/kucing-cat.jpg', translation: 'cat' },
+  { word: 'kuda', image: 'images/kuda-horse.jpg', translation: 'horse' },
   { word: 'laut', image: 'images/laut-sea.jpg', translation: 'sea' },
   { word: 'lembu', image: 'images/lembu-cow.jpg', translation: 'cow' },
+  { word: 'majalah', image: 'images/majalah-magazine.jpg', translation: 'magazine' },
+  { word: 'melihat', image: 'images/melihat-see.jpg', translation: 'see' },
+  { word: 'melukis', image: 'images/melukis-painting.jpg', translation: 'painting' },
+  { word: 'memancing', image: 'images/memancing-fishing.jpg', translation: 'fishing' },
   { word: 'memandu', image: 'images/memandu-driving.jpg', translation: 'driving' },
+  { word: 'membaca', image: 'images/membaca-reading.jpg', translation: 'reading' },
+  { word: 'mendaki', image: 'images/mendaki-hiking.jpg', translation: 'hiking' },
+  { word: 'mendengar', image: 'images/mendengar-listening.jpg', translation: 'listening' },
   { word: 'menempah', image: 'images/menempah-booking.jpg', translation: 'booking' },
+  { word: 'menulis', image: 'images/menulis-writing.jpg', translation: 'writing' },
   { word: 'menunggang', image: 'images/menunggang-riding.jpg', translation: 'riding' },
   { word: 'merancang', image: 'images/merancang-planning.jpg', translation: 'planning' },
   { word: 'penasihat', image: 'images/penasihat-adviser.jpg', translation: 'adviser' },
   { word: 'pengalaman', image: 'images/pengalaman-experience.jpg', translation: 'experience' },
   { word: 'perjalanan', image: 'images/perjalanan-journey.jpg', translation: 'journey' },
   { word: 'pertandingan', image: 'images/pertandingan-competition.jpg', translation: 'competition' },
-  { word: 'pesta', image: 'images/pesta-festival.jpg', translation: 'festival' }
+  { word: 'pesta', image: 'images/pesta-festival.jpg', translation: 'festival' },
+  { word: 'pulau', image: 'images/pulau-island.jpg', translation: 'island' },
+  { word: 'selsema', image: 'images/selsema-common cold.jpg', translation: 'common cold' },
+  { word: 'sukan', image: 'images/sukan-sports.jpg', translation: 'sports' },
+  { word: 'sukarelawan', image: 'images/sukarelawan-volunteer.jpg', translation: 'volunteer' },
+  { word: 'surat', image: 'images/surat-letter.jpg', translation: 'letter' },
+  { word: 'tarian', image: 'images/tarian-dance.jpg', translation: 'dance' },
+  { word: 'tasik', image: 'images/tasik-lake.jpg', translation: 'lake' },
 ];
 
 
@@ -169,6 +201,40 @@ function saveStats(run) {
   localStorage.setItem('vocabStats', JSON.stringify(history));
 }
 
+function renderHistory() {
+  const raw = localStorage.getItem('vocabStats');
+  const history = raw ? JSON.parse(raw) : [];
+
+  // sort most‑recent first
+  history.sort((a, b) =>
+    new Date(b.completedAt) - new Date(a.completedAt)
+  );
+
+  const tbody = document.querySelector('#history-table tbody');
+  tbody.innerHTML = '';  // clear old rows
+
+  history.forEach(run => {
+    const tr = document.createElement('tr');
+    const dt = new Date(run.completedAt);
+    // format in local Malay locale
+    const when = dt.toLocaleString('ms-MY', {
+      dateStyle: 'short',
+      timeStyle: 'short'
+    });
+
+    tr.innerHTML = `
+      <td>${when}</td>
+      <td>${run.correct}/${run.total}</td>
+      <td>${run.timeSeconds}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  // show the history container
+  document.getElementById('history-container')
+          .classList.remove('hidden');
+}
+
 
 function endQuiz() {
   const elapsed = Math.round((Date.now() - startTime) / 1000);
@@ -191,7 +257,9 @@ function endQuiz() {
   // show score and keep the “Cuba Lagi” label
   document.getElementById('score').textContent =
     `Anda jawab ${correctCount} daripada ${quizOrder.length} betul dalam ${elapsed} saat.`;
+
   // (retry button already says “Cuba Lagi”)
+  renderHistory();
 }
 
 // … rest of your code, listener on retry-btn, load/startQuiz …
