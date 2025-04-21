@@ -1,0 +1,114 @@
+/* reset & base */
+* { box‑sizing: border‑box; margin: 0; padding: 0; }
+body, html { width: 100%; font‑family: sans‑serif; }
+
+/* flex column; no longer a forced 100vh */
+#quiz-container {
+  display: flex;
+  flex-direction: column;
+  /* height: 100vh;  ← removed so grid can shrink to its content */
+}
+
+/* auto‑sized header */
+#word-display {
+  flex: 0 0 auto;          /* let it size to its content */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2em;
+  text-align: center;
+  padding: 1rem;
+}
+
+/* grid simply wraps 2 cols and gaps */
+#image-grid {
+  /* flex: 1;  ← remove so it doesn’t fill the rest of viewport */
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+  padding: 0.5rem;
+  /* implicit rows auto‑sized by content */
+}
+
+/* 📐 force each card square & cover its image inside */
+.image-wrapper {
+  position: relative;
+  aspect-ratio: 3 / 2;    /* 🔑 keep width = height */
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+}
+.image-wrapper img {
+  width: 100%;
+  height: 100%;           /* fill the square */
+  object-fit: cover;      /* crop/scale nicely */
+}
+
+/* overlays & icons & translations unchanged */
+.overlay {
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(128,128,128,0.5);
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+.icon {
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5em;
+  pointer-events: none;
+}
+.translation {
+  position: absolute; bottom: 0; left: 0;
+  width: 100%;
+  background: rgba(255,255,255,0.8);
+  text-align: center;
+  padding: 0.25rem 0;
+  font-size: 1em;
+  display: none;
+}
+
+/* result screen & button */
+.hidden { display: none; }
+#result-container {
+  padding: 1rem;
+  text-align: center;
+}
+#retry-btn {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  font-size: 1em;
+}
+
+/* optional: slightly shrink the header on very narrow phones */
+@media (max-width: 400px) {
+  #word-display {
+    font-size: 1.5em;
+    padding: 0.5rem;
+  }
+}
+
+
+
+
+#history-container {
+  margin-top: 1rem;
+  text-align: center;
+}
+#history-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.5rem 0;
+}
+#history-table th,
+#history-table td {
+  border: 1px solid #ccc;
+  padding: 0.5rem;
+}
+#history-table th {
+  background: #f0f0f0;
+}
