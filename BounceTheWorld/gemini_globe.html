@@ -5,17 +5,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3D Globe Viewer</title>
     <style>
-        body { margin: 0; overflow: hidden; background-color: #111; }
+        body { margin: 0; overflow: hidden; background-color: #111; font-family: sans-serif; }
         canvas { display: block; }
+
+        /* UI Overlay Styles */
+        #ui-container {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
         #info {
             position: absolute;
             top: 10px;
             width: 100%;
             text-align: center;
-            color: white;
-            font-family: sans-serif;
+            color: rgba(255, 255, 255, 0.6);
             pointer-events: none;
             user-select: none;
+            z-index: 5;
+        }
+
+        /* Styled File Input */
+        .upload-btn {
+            background-color: #ffffff;
+            color: #333;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            border: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            transition: background 0.2s;
+            text-align: center;
+        }
+
+        .upload-btn:hover {
+            background-color: #e0e0e0;
+        }
+
+        /* Hide the actual ugly checkbox/input */
+        #fileInput {
+            display: none;
         }
     </style>
 
@@ -32,15 +68,17 @@
 
     <div id="info">Left Click to Rotate &bull; Scroll to Zoom &bull; Right Click to Pan</div>
 
+    <div id="ui-container">
+        <label for="fileInput" class="upload-btn">📂 Upload Your Own Map</label>
+        <input type="file" id="fileInput" accept="image/jpeg, image/png, image/jpg">
+    </div>
+
     <script type="module">
-        // Now we can import from 'three' directly because of the import map above
         import * as THREE from 'three';
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-        // --- Standard Three.js Setup ---
-
+        // --- Standard Setup ---
         const scene = new THREE.Scene();
-
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         camera.position.z = 15;
 
@@ -48,22 +86,15 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
 
-        // --- Create Sphere ---
+        // --- Sphere Setup ---
         const geometry = new THREE.SphereGeometry(5, 64, 32);
-
-        // --- Load Texture ---
         const textureLoader = new THREE.TextureLoader();
 
-        // !!! REMINDER: Ensure this filename matches your image exactly !!!
-        const texture = textureLoader.load('./maps/world.topo.bathy.200406.3x5400x2700.jpg',
-            (t) => console.log('Texture loaded'),
-            undefined,
-            (err) => console.error('Error loading texture. Ensure you are running a Local Server (localhost), not just double-clicking the file.')
-        );
+        // Load default texture initially
+        let currentTexture = textureLoader.load('./maps/world.topo.bathy.200406.3x5400x2700.jpg');
+        currentTexture.colorSpace = THREE.SRGBColorSpace;
 
-        texture.colorSpace = THREE.SRGBColorSpace;
-
-        const material = new THREE.MeshBasicMaterial({ map: texture });
+        const material = new THREE.MeshBasicMaterial({ map: currentTexture });
         const sphere = new THREE.Mesh(geometry, material);
         scene.add(sphere);
 
@@ -75,14 +106,41 @@
         controls.minDistance = 6;
         controls.maxDistance = 50;
 
-        // --- Handle Resize ---
+        // --- HANDLE UPLOAD LOGIC ---
+        const fileInput = document.getElementById('fileInput');
+
+        fileInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                // Create a fake URL for the uploaded file
+                const objectURL = URL.createObjectURL(file);
+
+                // Load the new texture
+                textureLoader.load(objectURL, (newTexture) => {
+                    // Fix color settings
+                    newTexture.colorSpace = THREE.SRGBColorSpace;
+
+                    // Clean up old texture memory (optional but good practice)
+                    if (sphere.material.map) {
+                        sphere.material.map.dispose();
+                    }
+
+                    // Apply new texture
+                    sphere.material.map = newTexture;
+                    sphere.material.needsUpdate = true;
+
+                    console.log("New texture applied!");
+                });
+            }
+        });
+
+        // --- Resize & Animate ---
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
         });
 
-        // --- Animation Loop ---
         function animate() {
             requestAnimationFrame(animate);
             controls.update();
