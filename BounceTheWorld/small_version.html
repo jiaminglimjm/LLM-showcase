@@ -76,7 +76,7 @@
         // 1. CHANGE: PerspectiveCamera with Narrower FOV
         // FOV 45 is closer to how human eyes/standard cameras see objects at a distance.
         // It reduces the "fisheye" distortion found in the previous code (which was 75).
-        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 0.1, 1000);
         camera.position.z = 18;
 
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
